@@ -10,9 +10,16 @@ namespace ClothBazar.Web.Controllers
 {
     public class CategoryController : Controller
     {
-        CategoriesService categoryService = new CategoriesService();
+        categoriesService categoryService = new categoriesService();
+        
+        [HttpGet]
+        public ActionResult Index()
+        {
+            var categories = categoryService.GetCategories();
 
-        // GET: Category
+            return View(categories);
+        } 
+
         [HttpGet]
         public ActionResult Create()
         {
@@ -23,7 +30,34 @@ namespace ClothBazar.Web.Controllers
         public ActionResult Create(Category category)
         {
             categoryService.SaveCategory(category);
-            return View();
+            return RedirectToAction("Index");
         }
+        [HttpGet]
+        public ActionResult Edit(int Id)
+        {
+            var category = categoryService.GetCategory(Id);
+            return View(category);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(Category category)
+        {
+            categoryService.UpdateCategory(category);
+            return RedirectToAction("Index");
+        }
+        [HttpGet]
+        public ActionResult Delete(int Id)
+        {
+            var category = categoryService.GetCategory(Id);
+            return View(category);
+        }
+
+        [HttpPost]
+        public ActionResult Delete(Category category)
+        {
+            categoryService.DeleteCategory(category.Id);
+            return RedirectToAction("Index");
+        }
+
     }
 }
