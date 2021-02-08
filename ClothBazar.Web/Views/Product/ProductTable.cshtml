@@ -1,0 +1,58 @@
+﻿@model List<ClothBazar.Entities.Product>
+@{
+    ViewBag.Title = "ProductTable";
+}
+    
+<h2>Product Table</h2>
+<div>
+    <form method="post">
+        <input name="search" id="searchTxt" placeholder="Search" />
+        <button type="button" id="searchBtn"> Search</button>
+        <button type="button" id="newBtn">New</button>
+    </form>
+</div>
+<div>
+    <table border="1" width="60%">
+        <thead>
+            <tr>
+                <th style="text-align:center;">Product Name</th>
+                <th style="text-align:center;">Category</th>
+                <th style="text-align:center;">Price</th>
+                <th style="text-align:center;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model)
+            {
+                <tr>
+                    <td style="text-align:center;">@product.Name</td>
+                    <td style="text-align:center;">@product.Category</td>
+                    <td style="text-align:center;">@product.Price</td>
+                    <td style="text-align:center;">
+                        <button>Edit</button>
+                        <button>Delete</button>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    $("#searchBtn").click(function () {
+        var searchvalue = $("#searchTxt").val();
+        $.ajax({
+            type: "GET",
+            url: "/Product/ProductTable",
+            data: { search: searchvalue },
+            success: function (data) {
+                $("#TableContainer").replaceWith(data);
+            },
+            error: function (e, f, g) {
+                alert("Failed")
+            }
+        });
+    });
+</script>
+
+
