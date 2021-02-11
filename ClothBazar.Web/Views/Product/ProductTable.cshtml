@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "ProductTable";
 }
-    
+
 <h2>Product Table</h2>
 <div>
     <form method="post">
@@ -29,17 +29,16 @@
                     <td style="text-align:center;">@product.Category</td>
                     <td style="text-align:center;">@product.Price</td>
                     <td style="text-align:center;">
-                        <button>Edit</button>
-                        <button>Delete</button>
+                        <button class="editBtn" data-id="@product.Id">Edit</button>
+                        <button class="deleteBtn" data-id="@product.Id">Delete</button>
                     </td>
-
                 </tr>
             }
         </tbody>
     </table>
 </div>
 <script>
-    $("#searchBtn").click(function () {
+    $("#searchBtn").click(function (){
         var searchvalue = $("#searchTxt").val();
         $.ajax({
             type: "GET",
@@ -53,6 +52,46 @@
             }
         });
     });
+    $("#newBtn").click(function (){       
+        $.ajax({
+            url:'/Product/Create',
+        })
+            .done( function (response) {
+                $("#actionContainer").replaceWith(response);
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Failed");            
+            });
+    });
+    $(".editBtn ").click(function () {
+        $.ajax({
+            url: '/Product/Edit',
+            data:{ Id: $(this).attr('data-id') }
+        })
+            .done( function (response) {
+                $("#actionContainer").replaceWith(response);
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Failed");            
+            });
+    });
+
+    $(".deleteBtn ").click(function () {
+        var confirmDelete = confirm("Are You Sure ! You Want To Delete This ?")
+
+        if (confirmDelete) {
+            $.ajax({
+                type: 'POST',
+                url: '/Product/Delete',
+                data:{ Id: $(this).attr('data-id') }
+            })
+             .done( function (response) {
+                    $("#TableContainer").replaceWith(response);
+             })
+             .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("Failed");            
+             });
+        };
+        
+    });
 </script>
-
-
