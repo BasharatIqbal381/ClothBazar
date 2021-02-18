@@ -6,11 +6,55 @@
 <h2>Create Catagory</h2>
 <form method="post">
     <label>Name</label>
-    <input type="text" name="Name" />
-    <br /><hr />
-
+    <input type="text" name="Name" style="width:auto;" />
+    <br />
     <label>Description</label>
-    <input type="text" name="Description">
-    <br /><hr />
+    <input type="text" name="Description" style="width:auto;">
+    <br />
+    <label>Image</label>
+    <input type="hidden" id="ImageURL" name="ImageURL" />
+    <input id="imageUpload" type="file" name="Image" accept=".png, .jpg, .jpeg">
+    <div class="col-md-4">
+        <div class="thumb">
+            @*<img class="img-thumbnail img-fluid" id="categoryImage" src="@imageURL" />*@
+            <img id="categoryImage" />
+        </div>
+    </div>
+    <br />
     <button type="submit">Save</button>
 </form>
+
+<script>
+    $("#imageUpload").change(function () {
+		var element = this;
+
+		var formData = new FormData();
+
+		var totalFiles = element.files.length;
+
+		for (var i = 0; i < totalFiles; i++) {
+			var file = element.files[i];
+			formData.append("Photo", file);
+        } 
+        $.ajax({
+			type: 'POST',
+			url: '@Url.Action("UploadImage", "Shared")',
+			dataType: 'json',
+			data: formData,
+			contentType: false,
+			processData: false
+		})
+        .done(function (response) {
+        	console.log(response);
+
+        	if(response.Success)
+        	{
+        		$("#ImageURL").val(response.ImageURL);
+        		$("#categoryImage").attr("src", response.ImageURL);
+        	}
+        })
+        .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+        	alert("FAIL");
+        });
+    });
+</script>
